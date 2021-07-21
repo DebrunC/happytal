@@ -1,5 +1,7 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
+from core.config import settings
+from typing import List
 
-class ModelOutput(BaseModel):
-	email: EmailStr
-	numReco: int
+class OutputModel(BaseModel):
+	recommendations: List[int]
+	Number_of_recommendations: int

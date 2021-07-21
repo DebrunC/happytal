@@ -4,14 +4,16 @@ from core.config import settings
 def getRecommendationByClient(user_id,numReco):
     neighbors = []
     recommendations = []
+
     userToProduct = pd.read_csv(settings.USER_TO_PRODUCT)
     similarity_matrix_df = pd.read_csv(settings.SIMILARITY_MATRIX,index_col=0)
 
     if (user_id not in userToProduct['User_ID'].values):
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="user email not found")
-
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="user id not found")
 
     #for each product of the user find the 5 more similar products
+    #we could also filter on ratings > to 3 or 4 to get similar items to the ones liked by the person
+    #but in this database all users have only used one product so if we delete it because of rating there is no longer any recommendation
     for index, row in userToProduct[userToProduct['User_ID']==user_id].iterrows():
         prod=row['product_id']
         rating=row["product_rating"]        
@@ -28,4 +30,4 @@ def getRecommendationByClient(user_id,numReco):
             recommendations.append(neighbors[i][0])
             numberAdded=numberAdded+1
         i=i+1
-    return {"recommendations":recommendations,"Number of recommendations": numReco}
+    return {"recommendations":recommendations,"Number_of_recommendations": numReco}
